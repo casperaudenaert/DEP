@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations</title>
+</head>
+<body>
+    <h1>Recommended Campaigns and Likelihood for User {{ user_id }}</h1>
+
+    {% if recommendations.empty %}
+        <p>No recommendations available.</p>
+    {% else %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Campaign</th>
+                    <th>Campaign Name</th>
+                    <th>Likelihood (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, row in recommendations.iterrows() %}
+                    <tr>
+                        <td>{{ row['User'] }}</td>
+                        <td>{{ row['Campaign'] }}</td>
+                        <td>{{ row['crm_Campagne_Naam_in_email'] }}</td>
+                        <td>{{ row['Likelihood'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <form action="{{ url_for('download_recommendations', filename=file_path) }}" method="get">
+            <button type="submit">Download Recommendations</button>
+        </form>
+    {% endif %}
+
+</body>
+</html>
