@@ -1,0 +1,2 @@
+Mean Squared Error (MSE): 46.229165106321524
+Root Mean Squared Error (RMSE): 6.799203269966381
