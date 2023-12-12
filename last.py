@@ -35,6 +35,11 @@ user_columns = [
 
 target_column = 'crm_Campagne_Campagne'
 
+# Ensure proper encoding of the target variable if it's categorical
+if data[target_column].dtype == 'object':
+    label_encoder = LabelEncoder()
+    data[target_column] = label_encoder.fit_transform(data[target_column])
+
 # Preprocessing for numerical and categorical data
 numeric_features = data[user_columns].select_dtypes(include=['int64', 'float64']).columns
 categorical_features = data[user_columns].select_dtypes(include=['object']).columns
@@ -47,9 +52,10 @@ categorical_transformer = Pipeline(steps=[
     ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
     ('onehot', OneHotEncoder(handle_unknown='ignore'))])
 
+# Basic settings for text data preprocessing
 text_transformer = Pipeline(steps=[
-    ('tfidf', TfidfVectorizer(tokenizer=lambda x: x.split(','))),
-    ('svd', TruncatedSVD(n_components=100))  # Adjust as needed
+    ('tfidf', TfidfVectorizer(max_features=1000)),  # Limit the number of features
+    ('svd', TruncatedSVD(n_components=50))  # Basic dimensionality reduction
 ])
 
 preprocessor = ColumnTransformer(
@@ -59,10 +65,10 @@ preprocessor = ColumnTransformer(
         ('txt', text_transformer, text_column)
     ])
 
-# Building the Gradient Boosting model
+# Building a basic Gradient Boosting model
 model = Pipeline(steps=[
     ('preprocessor', preprocessor),
-    ('classifier', GradientBoostingClassifier(verbose=True))
+    ('classifier', GradientBoostingClassifier(verbose=True))  # Default parameters
 ])
 
 # Splitting data for training and testing
@@ -70,7 +76,7 @@ X = data[user_columns + [text_column]]
 y = data[target_column]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Training the model
+# Training the model with basic settings
 model.fit(X_train, y_train)
 
 # Evaluate the model
