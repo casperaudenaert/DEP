@@ -3,7 +3,7 @@ import pandas as pd
 
 def calculate_similarity_using_embeddings(keyword_set, text):
     if isinstance(keyword_set, str) and isinstance(text, str):
-        nlp = spacy.load("nl_core_news_md")
+        nlp = spacy.load("nl_core_news_lg")
         keyword_doc = nlp(keyword_set)
         text_doc = nlp(text)
         similarity = keyword_doc.similarity(text_doc)
