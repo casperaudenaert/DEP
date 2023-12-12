@@ -103,4 +103,4 @@ def recommend_campaigns_for_user(user_id, model, data, user_columns, text_column
 # Example usage
 user_id = 'CF1F12A2-046C-E111-B43A-00505680000A'  # Replace with an actual user ID
 recommendations = recommend_campaigns_for_user(user_id, model, data, user_columns, text_column, target_column)
-print(recommendations)
+print(recommendations)#commit
