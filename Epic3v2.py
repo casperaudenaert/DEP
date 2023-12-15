@@ -88,13 +88,12 @@ except Exception as e:
     print("Connection failed! Error:", e)
 df = pd.read_csv('file.csv')
 total_rows = len(df)
-part_size = total_rows // 4
+
+df.dropna(axis=0, inplace=True)
 
 midpoint = len(df) // 2
 first_half = df.loc[:midpoint-1]
 second_half = df.loc[midpoint:]
-
-df = first_half
 
 user_columns = [
     'Functie_naam','Fucntietitel','Status', 'Aanwezig_Afwezig','Bron','Activiteitstype','Product','Thema_Naam_','Thema','KeyPhrases','Ondernemingsaard','Ondernemingstype','Primaire_activiteit'
@@ -153,7 +152,13 @@ for campaign_index, probability in recommended_campaigns:
         filtered_recommendations.append((campaign_index, probability))
         unique_campaigns.add(campaign_id)
 
-print("Recommended Campaigns for User:", user_id_to_recommend)
-for i, (campaign_index, probability) in enumerate(filtered_recommendations, 1):
-    campaign_id = df.iloc[campaign_index]['Campagne']
-    print(f"{i}. Campaign ID: {campaign_id}, Probability: {probability*100:.2f}%")
+output_file = 'recommendations.txt'
+
+with open(output_file, 'w') as file:
+    file.write(f"Recommended Campaigns for User: {user_id_to_recommend}\n")
+    for i, (campaign_index, probability) in enumerate(filtered_recommendations, 1):
+        campaign_id = df.iloc[campaign_index]['Campagne']
+        end_date = df.iloc[campaign_index]['Einddatum']
+        file.write(f"{i}. Campaign ID: {campaign_id}, Probability: {probability*100:.2f}%, End Date: {end_date}\n")
+
+print(f"Recommendations saved to {output_file}")
