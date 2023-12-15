@@ -8,84 +8,84 @@ from sqlalchemy import create_engine, text
 
 
 
-server = '127.0.0.1,1438'
-database = 'Project'
-username = 'sa'
-password = 'root_1234'
+# server = '127.0.0.1,1438'
+# database = 'Project'
+# username = 'sa'
+# password = 'root_1234'
 
 
-params = urllib.parse.quote_plus(
-    'DRIVER={ODBC Driver 17 for SQL Server};' +
-    'SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+# params = urllib.parse.quote_plus(
+#     'DRIVER={ODBC Driver 17 for SQL Server};' +
+#     'SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
 
-# Create the SQLAlchemy engine
-engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
+# # Create the SQLAlchemy engine
+# engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
 
-try:
-    # Establish a connection
-    connection = engine.connect()
-    print("Connected to the database successfully!")
+# try:
+#     # Establish a connection
+#     connection = engine.connect()
+#     print("Connected to the database successfully!")
 
-    sql_query = """SELECT
-	f.Functie, 
-	f.Functie_naam,
-	cf.Conctactpersoon,
-	cf.Functie,
-	c.Contactfiche,
-	c.Account,
-	c.Fucntietitel,
-	c.Persoon,
-	c.[Status],
-	I.Aanwezig_Afwezig,
-	I.Bron,
-	I.Contactfiche,
-	I.Inschrijving,
-	si.Inschrijving,
-	si.Sessie,
-	si.SessieInschrijving,
-	s.Activiteitstype,
-	s.Campagne,
-	s.Product,
-	s.Sessie,
-	s.Thema_Naam_,
-	cp.Campagne,
-	cp.Einddatum,
-	cp.Naam_in_email,
-	cp.Startdatum,
-	cp.Type_campagne,
-	cp.Soort_Campagne,
-	abc.Afspraak,
-	abc.Thema,
-	abc.Betreft_id,
-	abc.KeyPhrases,
-	a.Account,
-	a.Ondernemingsaard,
-	a.Ondernemingstype,
-	a.Primaire_activiteit
-FROM 
-	Functies f
-JOIN
-	Contactfiches_functies cf ON f.Functie = cf.Functie
-JOIN
-	Contactfiches c ON cf.Conctactpersoon = c.Contactfiche
-JOIN
-	Inschrijving I ON c.Contactfiche = I.Contactfiche
-JOIN
-	SessieInschrijving si ON I.Inschrijving = si.Inschrijving
-JOIN
-	sessie s ON si.Sessie = s.Sessie
-JOIN
-	Campagne cp ON s.Campagne = cp.Campagne
-JOIN
-	Afspraak_betreft_contactfiche abc ON c.Contactfiche = abc.Betreft_id
-JOIN
-	Accounts a ON c.Account = a.Account"""
+#     sql_query = """SELECT
+# 	f.Functie, 
+# 	f.Functie_naam,
+# 	cf.Conctactpersoon,
+# 	cf.Functie,
+# 	c.Contactfiche,
+# 	c.Account,
+# 	c.Fucntietitel,
+# 	c.Persoon,
+# 	c.[Status],
+# 	I.Aanwezig_Afwezig,
+# 	I.Bron,
+# 	I.Contactfiche,
+# 	I.Inschrijving,
+# 	si.Inschrijving,
+# 	si.Sessie,
+# 	si.SessieInschrijving,
+# 	s.Activiteitstype,
+# 	s.Campagne,
+# 	s.Product,
+# 	s.Sessie,
+# 	s.Thema_Naam_,
+# 	cp.Campagne,
+# 	cp.Einddatum,
+# 	cp.Naam_in_email,
+# 	cp.Startdatum,
+# 	cp.Type_campagne,
+# 	cp.Soort_Campagne,
+# 	abc.Afspraak,
+# 	abc.Thema,
+# 	abc.Betreft_id,
+# 	abc.KeyPhrases,
+# 	a.Account,
+# 	a.Ondernemingsaard,
+# 	a.Ondernemingstype,
+# 	a.Primaire_activiteit
+# FROM 
+# 	Functies f
+# JOIN
+# 	Contactfiches_functies cf ON f.Functie = cf.Functie
+# JOIN
+# 	Contactfiches c ON cf.Conctactpersoon = c.Contactfiche
+# JOIN
+# 	Inschrijving I ON c.Contactfiche = I.Contactfiche
+# JOIN
+# 	SessieInschrijving si ON I.Inschrijving = si.Inschrijving
+# JOIN
+# 	sessie s ON si.Sessie = s.Sessie
+# JOIN
+# 	Campagne cp ON s.Campagne = cp.Campagne
+# JOIN
+# 	Afspraak_betreft_contactfiche abc ON c.Contactfiche = abc.Betreft_id
+# JOIN
+# 	Accounts a ON c.Account = a.Account"""
 
-    df = pd.read_sql(text(sql_query), connection)
+#     df = pd.read_sql(text(sql_query), connection)
 
-    connection.close()
-except Exception as e:
-    print("Connection failed! Error:", e)
+#     connection.close()
+# except Exception as e:
+#     print("Connection failed! Error:", e)
 df = pd.read_csv('file.csv')
 total_rows = len(df)
 part_size = total_rows // 4
@@ -108,7 +108,7 @@ user_feature_matrix = tfidf_vectorizer_user.fit_transform(df['user_features'])
 user_similarity = cosine_similarity(user_feature_matrix)
 
 def get_recommendations(user_id, user_similarity, df, num_recommendations=5, content_based=False):
-    user_df = df[df['Conctactpersoon'] == user_id]
+    user_df = df[df['Contactfiche'] == user_id]
     
     registered_campaign_indices = user_df.index.tolist()
     
@@ -141,7 +141,7 @@ def get_recommendations(user_id, user_similarity, df, num_recommendations=5, con
     
     return recommended_campaigns
 
-user_id_to_recommend = '0B6B8265-53FC-E811-80F9-001DD8B72B61'
+user_id_to_recommend = '25819DD0-28CE-E811-80F7-001DD8B72B61'
 recommended_campaigns = get_recommendations(user_id_to_recommend, user_similarity, df, content_based=True)
 
 unique_campaigns = set()
