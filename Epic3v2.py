@@ -108,7 +108,7 @@ user_feature_matrix = tfidf_vectorizer_user.fit_transform(df['user_features'])
 user_similarity = cosine_similarity(user_feature_matrix)
 
 def get_recommendations(user_id, user_similarity, df, num_recommendations=5, content_based=False):
-    user_df = df[df['Conctactpersoon'] == user_id]
+    user_df = df[df['Contactfiche'] == user_id]
     
     registered_campaign_indices = user_df.index.tolist()
     
@@ -141,7 +141,7 @@ def get_recommendations(user_id, user_similarity, df, num_recommendations=5, con
     
     return recommended_campaigns
 
-user_id_to_recommend = '0B6B8265-53FC-E811-80F9-001DD8B72B61'
+user_id_to_recommend = '25819DD0-28CE-E811-80F7-001DD8B72B61'
 recommended_campaigns = get_recommendations(user_id_to_recommend, user_similarity, df, content_based=True)
 
 unique_campaigns = set()
