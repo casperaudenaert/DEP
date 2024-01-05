@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyewKQpC0NlQC1YXdjf3yD95e5PmI2X7W" crossorigin="anonymous">
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            margin-bottom: 10px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .card:hover {
+            background-color: #f8f9fa;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .campaign-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .end-date {
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recommendations for User: {{ user_id }}</h1>
+
+        <!-- Live search input -->
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search Campaigns..." id="searchInput">
+        </div>
+
+        {% if recommendations %}
+            <div id="recommendationsList" class="card-deck">
+                {% for recommendation in recommendations %}
+                    <div class="card" onclick="location.href='#';">
+                        <div class="card-body">
+                            <div class="campaign-id">Campaign ID: {{ recommendation[2] }}</div>
+                            <div class="campaign-name">{{ recommendation[0] }}</div>
+                            <div class="end-date">End Date: {{ recommendation[1] }}</div>
+                            <div class="thema">Thema: {{ recommendation[3] }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No recommendations available.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function() {
+            var input, filter, div, i, campaignName, endDate;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            div = document.getElementById('recommendationsList').getElementsByClassName('card');
+
+            for (i = 0; i < div.length; i++) {
+                campaignName = div[i].getElementsByClassName('campaign-name')[0];
+                endDate = div[i].getElementsByClassName('end-date')[0];
+                if (campaignName.innerText.toUpperCase().indexOf(filter) > -1 || endDate.innerText.toUpperCase().indexOf(filter) > -1) {
+                    div[i].style.display = '';
+                } else {
+                    div[i].style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
