@@ -13,6 +13,7 @@ import time
 import urllib.parse
 from sqlalchemy import create_engine, text
 from sklearn.model_selection import train_test_split
+from flask import send_file
 
 app = Flask(__name__)
 
@@ -83,6 +84,7 @@ JOIN
 except Exception as e:
     print("Connection failed! Error:", e)
 
+
 df = pd.read_csv('database.csv')
 df.dropna(axis=0, inplace=True)
 
@@ -92,7 +94,7 @@ user_columns = [
 
 df['user_features'] = df[user_columns].apply(lambda row: ' '.join(row.values.astype(str)), axis=1)
 
-best_n_components = 40
+best_n_components = 10
 best_vectorizer_params = {'max_features': 10000, 'ngram_range': (1, 1)}
 best_scaler_params= {'with_mean': True, 'with_std': True}
 
@@ -182,11 +184,21 @@ def get_recommendations_route():
     duration = end_time - start_time
     print(f"Time taken to calculate recommendations: {duration} seconds")
     if num_recommendations == 0:
+        output_file = f'user_recommendations_{user_id}.txt'
+        with open(output_file, 'w') as file:
+            file.write(f"Recommended Campaigns for User ID: {user_id}\n")
+            for i, (campaign_name, end_date, campaign_id, thema) in enumerate(filtered_recommendations[:num_recommendations], 1):
+                file.write(f"{i}. Campaign ID: {campaign_id}, Name: {campaign_name}, End Date: {end_date}, Thema: {thema}\n")
+        print(f"Recommendations saved to {output_file}")
         return render_template('recommendations.html', user_id=user_id, recommendations=filtered_recommendations)
     else:
+        output_file = f'user_recommendations_{user_id}.txt'
+        with open(output_file, 'w') as file:
+            file.write(f"Recommended Campaigns for User ID: {user_id}\n")
+            for i, (campaign_name, end_date, campaign_id, thema) in enumerate(filtered_recommendations[:num_recommendations], 1):
+                file.write(f"{i}. Campaign ID: {campaign_id}, Name: {campaign_name}, End Date: {end_date}, Thema: {thema}\n")
+        print(f"Recommendations saved to {output_file}")
         return render_template('recommendations.html', user_id=user_id, recommendations=filtered_recommendations[:num_recommendations])
-
-       
 
 if __name__ == '__main__':
     app.run(debug=True)

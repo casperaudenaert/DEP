@@ -35,6 +35,9 @@
             font-size: 14px;
             color: #6c757d;
         }
+        .download-button {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -58,6 +61,9 @@
                         </div>
                     </div>
                 {% endfor %}
+            </div>
+            <div class="download-button">
+                <a class="btn btn-primary" href="/download/{{ user_id }}">Download Excel</a>
             </div>
         {% else %}
             <p>No recommendations available.</p>
